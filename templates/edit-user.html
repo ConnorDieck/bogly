@@ -4,16 +4,19 @@
 {% block content %}
     <h1>Edit a user</h1>
 
-    <form action="">
+    <form action="/users/{{user.id}}/edit" method="POST">
         <label for="first-name">First Name</label>
-        <input type="text" placeholder="Joel" name="first-name">
+        <input type="text" placeholder="{{user.first_name}}" name="first-name" required>
         <label for="last-name">Last Name</label>
-        <input type="text" placeholder="Burton" name="last-name">
+        <input type="text" placeholder="{{user.last_name}}" name="last-name" required>
         <label for="img-url">Image URL</label>
-        <input type="text" placeholder="http://joelburton.com/joel-burton.jpg" name="img-url">
+        <input type="text" placeholder="{{user.img_url}}" name="img-url" required>
+    
+        <a href="/users/{{user.id}}" class="btn btn-outline-success">Cancel</a>
+        <button class="btn btn-success">Save</button>
+    
     </form>
 
-    <button>Cancel</button>
-    <button>Save</button>
+    
 
 {% endblock %}
