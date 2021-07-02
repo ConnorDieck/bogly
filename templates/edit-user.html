@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Blogly{% endblock %}
+
+{% block content %}
+    <h1>Edit a user</h1>
+
+    <form action="">
+        <label for="first-name">First Name</label>
+        <input type="text" placeholder="Joel" name="first-name">
+        <label for="last-name">Last Name</label>
+        <input type="text" placeholder="Burton" name="last-name">
+        <label for="img-url">Image URL</label>
+        <input type="text" placeholder="http://joelburton.com/joel-burton.jpg" name="img-url">
+    </form>
+
+    <button>Cancel</button>
+    <button>Save</button>
+
+{% endblock %}
