@@ -105,12 +105,12 @@ def process_newpost(user_id):
     title = request.form["title"]
     content = request.form["content"]
 
-    post = Post(title=title, content=content)
+    post = Post(title=title, content=content, user_id=user_id)
 
     db.session.add(post)
     db.session.commit()
 
-    return redirect('/users/<int:user_id>')
+    return redirect(f'/users/{user_id}')
 
 @app.route('/posts/<int:post_id>')
 def show_post(post_id):
@@ -120,24 +120,33 @@ def show_post(post_id):
 
     return render_template("post-detail.html", post=post)
 
-@app.route('/posts/<int:post_id>/edit')
+@app.route('/posts/<int:post_id>/edit', methods=["GET"])
 def show_post_edit_form(post_id):
-    """Show the edit page for a user"""
+    """Show the edit page for a post"""
 
     post = Post.query.get_or_404(post_id)
 
     return render_template("edit-post.html", post=post)
 
-# @app.route('/posts/<int:post_id>/edit', methods=["POST"])
-# def process_edit(post_id):
-#     """Process the edit page for a user"""
+@app.route('/posts/<int:post_id>/edit', methods=["POST"])
+def edit_post(post_id):
+    """Process information from edit form and edit the post"""
 
-#     title = request.form["title"]
-#     content = request.form["content"]
+    post = Post.query.get_or_404(post_id)
 
-#     post = Post(title=title, content=content)
+    title = request.form["title"]
+    content = request.form["content"]
 
-#     db.session.add(post)
-#     db.session.commit()
+    post.title = title
+    post.content = content
 
-#     return redirect('/posts/<int:post_id>')
+    db.session.commit()    
+
+    return redirect(f'/posts/{post_id}')
+
+@app.route('/posts/<int:post_id>/delete')
+def delete_post(post_id):
+
+    Post.query.filter(Post.id == post_id).delete()
+    db.session.commit()
+    return redirect('/users')

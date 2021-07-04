@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from app import app
-from models import db, User
+from models import db, User, Post
 
 # Use test database and don't clutter tests with SQL
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly_test'
@@ -22,6 +22,7 @@ class UserViewsTestCase(TestCase):
     def setUp(self):
         """Add sample user."""
 
+        Post.query.delete() # Delete post first so there won't be any issues with deleting the user
         User.query.delete()
 
         user = User(first_name="Test", last_name="User", image_url="https://www.google.com/search?q=smiley+face&sxsrf=ALeKk02sPyGVrwrhx3_qkZFrTAhc-1pq1A:1625257795150&tbm=isch&source=iu&ictx=1&fir=2ibD-NzxUXqVVM%252CEB-7l6d3ePZ1CM%252C%252Fm%252F06n05&vet=1&usg=AI4_-kTEuM_DHhhirLOpxs6L4Fo_bmtrcA&sa=X&ved=2ahUKEwjO8LCMncXxAhXGX80KHd-UDNIQ_B16BAgzEAE#imgrc=2ibD-NzxUXqVVM")
@@ -59,3 +60,15 @@ class UserViewsTestCase(TestCase):
 
             self.assertEqual(resp.status_code, 200)
             self.assertIn("Test User", html)
+
+    def test_add_post(self):
+        with app.test_client() as client:
+
+            user = User.query.one()
+
+            p = {"title": "Test", "content": "How testy of you", "user_id": user.id}
+            resp = client.post(f"/users/{user.id}/posts/new", data=p, follow_redirects=True)
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn("Test", html)

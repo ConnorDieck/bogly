@@ -1,11 +1,16 @@
 {% extends 'base.html' %}
-{% block title %}Blogly{% endblock %}
+{% block title %}User Details{% endblock %}
 
 {% block content %}
 
     <img src="{{user.image_url}}" alt="User image">
 
     <h1>{{ user.first_name }} {{user.last_name}}</h1>
+
+    <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
+    <a href="/users/{{user.id}}/delete" class="btn btn-danger">Delete</a>
+
+    <h2>Posts</h2>
 
     {% if posts %}
         <ul>
@@ -16,8 +21,9 @@
             {% endfor %}
         </ul>
     {% endif %}
+
+    <a href="/users/{{user.id}}/posts/new" class="btn btn-info">Add Post</a>
     
-    <a href="/users/{{user.id}}/edit" class="btn btn-primary">Edit</a>
-    <a href="/users/{{user.id}}/delete" class="btn btn-danger">Delete</a>
+
 
 {% endblock %}
