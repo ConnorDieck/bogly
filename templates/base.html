@@ -12,8 +12,10 @@
     </nav>
     
     <main id="content">
+        <div class="container">
+            {% block content %}BODY CONTENT GOES HERE{% endblock %}
+        </div>
         
-        {% block content %}BODY CONTENT GOES HERE{% endblock %}
         <br>
         <footer>Copyright by Toby Inc.</footer>
     </main>
