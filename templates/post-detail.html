@@ -6,7 +6,18 @@
     <h1>{{post.title}}</h1>
 
     <p>{{post.content}}</p>
+
+    <p class="post-details">By {{post.user.first_name}} {{post.user.last_name}} on {{post.created_at}}</p>
+
+    <div class="tags">Tags:
+        {% for tag in tags %}
+            <a href="/tags/{{tag.id}}" class="tag-btn">{{tag.name}}</a>
+        {% endfor %}
+    </div>
+
+    <br>
     
+    <a href="/users/{{post.user.id}}" class="btn btn-outline-primary">Cancel</a>
     <a href="/posts/{{post.id}}/edit" class="btn btn-primary">Edit</a>
     <a href="/posts/{{post.id}}/delete" class="btn btn-danger">Delete</a>
 

@@ -1,6 +1,6 @@
 """Seed file to make sample data for db"""
 
-from models import Post, User, db
+from models import Post, PostTag, User, Tag, db
 from app import app
 
 # Create all tables
@@ -17,9 +17,26 @@ p3 = Post(title="To Roy", content="Hurry up and plan our wedding", user_id=2)
 p4 = Post(title="To Dwight", content="Dwight, you lazy slut", user_id=3)
 
 db.session.add_all([jim, pam, michael])
-
 db.session.commit()
 
-db.session.add_all([p1, p2, p3, p4])
+funny = Tag(name="funny", posts=[p1, p2])
+flirty = Tag(name="flirty", posts=[p2, p3])
+to_someone = Tag(name="to_someone", posts=[p2, p3, p4])
+unassigned = Tag(name="unassigned")
 
+# funny.posts.append(p1, p4)
+# flirty.posts.append(p2, p3)
+# to_someone.posts.append(p2, p3, p4)
+
+# The following receives: AttributeError: 'Tag' object has no attribute 'parent_token'
+
+# p1.tags.append(funny)
+# p2.tags.append(to_someone, flirty)
+# p3.tags.append(to_someone, flirty)
+# p4.tags.append(funny,to_someone)
+
+db.session.add_all([p1, p2, p3, p4])
+db.session.commit()
+
+db.session.add_all([funny, flirty, to_someone, unassigned])
 db.session.commit()

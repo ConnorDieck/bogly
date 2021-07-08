@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from app import app
-from models import db, User, Post
+from models import db, User, Post, Tag, PostTag
 
 # Use test database and don't clutter tests with SQL
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly_test'
@@ -34,11 +34,16 @@ class UserViewsTestCase(TestCase):
         self.user_lastname = user.last_name
 
         post = Post(title="Post Test", content="Flask Test")
+        # tag = Tag(name="Tag Test", posts=[post])
+
         db.session.add(post)
         db.session.commit()
 
+        self.post = post
         self.post_id = post.id
         self.post_title = post.title
+
+        # self.tag_id = tag.id
 
     def tearDown(self):
         """Clean up any fouled transaction."""
@@ -153,13 +158,25 @@ class UserViewsTestCase(TestCase):
             self.assertEqual(resp.status_code, 200)
             self.assertIn(f'<h1>Edit</h1>', html)
 
-        def test_post_delete(self):
-            """Test that when delete post route is followed, the page redirects and the post is gone from the database"""
-            with app.test_client() as client:
-                resp = client.get(f"/posts/{self.post_id}/delete",    follow_redirects=True)
-
-                self.assertEqual(resp.status_code, 200)
+    def test_post_delete(self):
+        """Test that when delete post route is followed, the page redirectsand the post is gone from the database"""
+        with app.test_client() as client:
+            resp = client.get(f"/posts/{self.post_id}/delete",   follow_redirects=True)
+            self.assertEqual(resp.status_code, 200)
                 
-                post = Post.query.first()
+            post = Post.query.first()
+            self.assertEqual(post, None)
 
-                self.assertEqual(post, None)
+    def test_show_tags(self):
+        """Test that /tags shows all tags on page"""
+        with app.test_client() as client:
+            tag = Tag(name="Tag Test", posts=[self.post])
+
+            db.session.add(tag)
+            db.session.commit()
+
+            resp = client.get("/tags")
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('Tag Test</a></li>', html)
